@@ -3,16 +3,19 @@ import smtplib
 import requests
 import simplejson as json
 from email.mime.text import MIMEText
-from settings import settings, mails
+from settings import mail_settings, outgoing_mails, api_key
 
+# Set the current time and add that to the message subject
 cur_date = datetime.date.today().strftime("%B") +\
     ' ' + datetime.date.today().strftime("%d") +\
     ', ' + datetime.date.today().strftime("%Y")
 subject = 'Family forecast for ' + cur_date
 
 # get the weather
-mail_url = 'http://api.wunderground.com/api/79041d492b3219b3/forecast/q/VA/Leesburg.json'
+mail_url = 'http://api.wunderground.com/api/' + api_key + '/forecast/q/VA/Leesburg.json'
+print mail_url
 r = requests.get(mail_url)
+print r.text
 j = json.loads(r.text)
 
 html_open = """\
@@ -43,11 +46,11 @@ COMMASPACE = ', '
 
 msg = MIMEText(mail_text, 'html')
 msg['Subject'] = subject
-msg['From'] = 'DeBarros Family Hackr Bot2 ' + settings['address']
-msg['To'] = COMMASPACE.join(mails)
+msg['From'] = 'DeBarros Family Hackr Bot'
+msg['To'] = COMMASPACE.join(outgoing_mails)
 
-server = smtplib.SMTP(settings['smtp'], 25)
-server.login(settings['address'], settings['p'])
+server = smtplib.SMTP(mail_settings['smtp'], 25)
+server.login(mail_settings['address'], mail_settings['pw'])
 server.set_debuglevel(1)
-server.sendmail(settings['address'], mails, msg.as_string())
+server.sendmail(mail_settings['address'], outgoing_mails, msg.as_string())
 server.quit()
