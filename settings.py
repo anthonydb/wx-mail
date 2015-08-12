@@ -1,6 +1,6 @@
 mail_settings = {
     'address': 'anyone@example.com',
-    'pw': 'your-password',
+    'pw': 'your-email-password',
     'smtp': 'post.example.com'
 }
 
