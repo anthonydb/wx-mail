@@ -6,4 +6,4 @@ mail_settings = {
 
 outgoing_mails = ['someone@example.com', 'someone_else@example.com']
 
-api_key = 'your-wxunderground-api-key'
+api_key = 'your-wunderground-api-key'

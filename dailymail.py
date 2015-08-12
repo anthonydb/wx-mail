@@ -5,18 +5,21 @@ import simplejson as json
 from email.mime.text import MIMEText
 from settings import mail_settings, outgoing_mails, api_key
 
+def fetch_forecast(api_key):
+    mail_url = 'http://api.wunderground.com/api/' + api_key + '/forecast/q/VA/Leesburg.json'
+    r = requests.get(mail_url)
+    j = json.loads(r.text)
+    return j
+
+json = fetch_forecast(api_key)
+
+
 # Set the current time and add that to the message subject
 cur_date = datetime.date.today().strftime("%B") +\
     ' ' + datetime.date.today().strftime("%d") +\
     ', ' + datetime.date.today().strftime("%Y")
 subject = 'Family forecast for ' + cur_date
 
-# get the weather
-mail_url = 'http://api.wunderground.com/api/' + api_key + '/forecast/q/VA/Leesburg.json'
-print mail_url
-r = requests.get(mail_url)
-print r.text
-j = json.loads(r.text)
 
 html_open = """\
 <html>
@@ -29,14 +32,14 @@ html_close = """\
 </html>
 """
 
-wxdate = j['forecast']['txt_forecast']['date']
+wxdate = json['forecast']['txt_forecast']['date']
 
 mail_text = '<p><b>Hello, DeBarros family!</b></p><p>Here is the Leesburg, Va., weather forecast as of ' + wxdate + '</p>'
-forecast_length = len(j['forecast']['txt_forecast']['forecastday']) - 1
+forecast_length = len(json['forecast']['txt_forecast']['forecastday']) - 1
 
 for i in range(0, forecast_length):
-    cast = '<p><b>' + j['forecast']['txt_forecast']['forecastday'][i]['title'] + '</b>: ' +\
-           j['forecast']['txt_forecast']['forecastday'][i]['fcttext'] + '</p>'
+    cast = '<p><b>' + json['forecast']['txt_forecast']['forecastday'][i]['title'] + '</b>: ' +\
+           json['forecast']['txt_forecast']['forecastday'][i]['fcttext'] + '</p>'
     mail_text += cast
 
 mail_text = html_open + mail_text + html_close
