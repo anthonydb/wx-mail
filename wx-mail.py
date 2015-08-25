@@ -25,7 +25,7 @@ def build_html(forecast_json, yesterday_json):
 
     # let's now build the HTML body contents
     wxdate = forecast_json['forecast']['txt_forecast']['date']
-    mail_text = '<p><b>Hello, DeBarros family!</b></p><p>Here is the Leesburg, Va., weather forecast as of ' + wxdate + '</p>'
+    mail_text = '<h3>Hello, DeBarros family!</h3><p>Here is the Leesburg, Va., weather forecast as of ' + wxdate + '</p>'
     forecast_length = len(forecast_json['forecast']['txt_forecast']['forecastday']) - 1
 
     # looping through the JSON object
@@ -45,7 +45,7 @@ def build_html(forecast_json, yesterday_json):
     max_wind_speed = yesterday_json['history']['dailysummary'][0]['maxwspdi'] + ' mph'
 
     yesterday_html = """\
-    <p>Here's yesterday's weather summary:</p>
+    <h3>Here's yesterday's weather summary:</h3>
     <p><b>High/low temperature: </b>""" + high_low_temp + '</p>' +\
     '<p><b>Max/min humidity: </b>' + max_min_humid + '</p>' +\
     '<p><b>Precipitation: </b>' + precipitation + '</p>' +\
