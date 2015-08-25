@@ -4,6 +4,6 @@ mail_settings = {
     'smtp': 'post.example.com'
 }
 
-outgoing_mails = ['someone@example.com', 'someone_else@example.com']
+send_to_addresses = ['someone@example.com', 'someone_else@example.com']
 
 api_key = 'your-wunderground-api-key'

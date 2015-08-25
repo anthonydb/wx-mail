@@ -3,7 +3,7 @@ import smtplib
 import requests
 import simplejson as json
 from email.mime.text import MIMEText
-from settings import mail_settings, outgoing_mails, api_key
+from local_settings import mail_settings, send_to_addresses, api_key
 
 def fetch_forecast(api_key, request_type):
     mail_url = 'http://api.wunderground.com/api/' + api_key + '/' + request_type +'/forecast/q/VA/Leesburg.json'
@@ -51,7 +51,6 @@ def build_html(forecast_json, yesterday_json):
     '<p><b>Precipitation: </b>' + precipitation + '</p>' +\
     '<p><b>Maximum wind speed: </b>' + max_wind_speed + '</p>'
 
-
     # put it all together
     html_body = html_open + mail_text + yesterday_html + html_close
     return html_body
@@ -69,12 +68,12 @@ def send_email(mail_text):
     msg = MIMEText(mail_text, 'html')
     msg['Subject'] = subject
     msg['From'] = 'DeBarros Family Hackr Bot'
-    msg['To'] = COMMASPACE.join(outgoing_mails)
+    msg['To'] = COMMASPACE.join(send_to_addresses)
 
     server = smtplib.SMTP(mail_settings['smtp'], 25)
     server.login(mail_settings['address'], mail_settings['pw'])
     server.set_debuglevel(1)
-    server.sendmail(mail_settings['address'], outgoing_mails, msg.as_string())
+    server.sendmail(mail_settings['address'], send_to_addresses, msg.as_string())
     server.quit()
 
 if __name__ == "__main__":
