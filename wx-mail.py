@@ -3,7 +3,7 @@ import smtplib
 import requests
 import simplejson as json
 from email.mime.text import MIMEText
-from local_settings import mail_settings, send_to_addresses, api_key
+from settings import mail_settings, send_to_addresses, api_key
 
 def fetch_forecast(api_key, request_type):
     mail_url = 'http://api.wunderground.com/api/' + api_key + '/' + request_type +'/forecast/q/VA/Leesburg.json'
@@ -67,7 +67,7 @@ def send_email(mail_text):
 
     msg = MIMEText(mail_text, 'html')
     msg['Subject'] = subject
-    msg['From'] = 'DeBarros Family Hackr Bot'
+    msg['From'] = mail_settings['from']
     msg['To'] = COMMASPACE.join(send_to_addresses)
 
     server = smtplib.SMTP(mail_settings['smtp'], 25)
