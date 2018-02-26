@@ -3,7 +3,7 @@ import smtplib
 import requests
 import simplejson as json
 from email.mime.text import MIMEText
-from settings import mail_settings, send_to_addresses, api_key
+from local_settings import mail_settings, send_to_addresses, api_key
 
 
 def fetch_forecast(api_key, request_type):
@@ -29,24 +29,36 @@ def build_html(forecast_json, yesterday_json):
     # let's now build the HTML body contents
     wxdate = forecast_json['forecast']['txt_forecast']['date']
     mail_text = '<h3>Hello, DeBarros family!</h3><p>Here is the ' +\
-                'Leesburg, Va.,' weather forecast as of ' + wxdate + '</p>'
+                'Leesburg, Va., weather forecast as of ' + wxdate + '</p>'
     forecast_length = len(forecast_json['forecast']['txt_forecast']['forecastday']) - 1
 
     # looping through the JSON object
     for i in range(0, forecast_length):
-        cast = '<p><b>' + forecast_json['forecast']['txt_forecast']['forecastday'][i]['title'] + '</b>: ' +\
-               forecast_json['forecast']['txt_forecast']['forecastday'][i]['fcttext'] + '</p>'
+        cast = '<p><b>' +\
+            forecast_json['forecast']['txt_forecast']['forecastday'][i]['title'] +\
+            '</b>: ' +\
+            forecast_json['forecast']['txt_forecast']['forecastday'][i]['fcttext'] +\
+            '</p>'
         mail_text += cast
 
     # Now, for yesterday's weather summary ...
     # We'll pull the date and some weather data from the summary API endpoint
     summary_date = yesterday_json['history']['dailysummary'][0]['date']['pretty']
-    high_low_temp = yesterday_json['history']['dailysummary'][0]['maxtempi'] + ' / ' +\
-                    yesterday_json['history']['dailysummary'][0]['mintempi'] + ' degrees Fahrenheit'
-    max_min_humid = yesterday_json['history']['dailysummary'][0]['maxhumidity'] + '% / ' +\
-                    yesterday_json['history']['dailysummary'][0]['minhumidity'] + '%'
-    precipitation = yesterday_json['history']['dailysummary'][0]['precipi'] + ' inches'
-    max_wind_speed = yesterday_json['history']['dailysummary'][0]['maxwspdi'] + ' mph'
+
+    high_low_temp = yesterday_json['history']['dailysummary'][0]['maxtempi'] +\
+        ' / ' +\
+        yesterday_json['history']['dailysummary'][0]['mintempi'] +\
+        ' degrees Fahrenheit'
+
+    max_min_humid = yesterday_json['history']['dailysummary'][0]['maxhumidity'] +\
+        '% / ' +\
+        yesterday_json['history']['dailysummary'][0]['minhumidity'] + '%'
+
+    precipitation = yesterday_json['history']['dailysummary'][0]['precipi'] +\
+        ' inches'
+
+    max_wind_speed = yesterday_json['history']['dailysummary'][0]['maxwspdi'] +\
+        ' mph'
 
     yesterday_html = """\
     <h3>Here's yesterday's weather summary:</h3>
