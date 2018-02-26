@@ -3,7 +3,7 @@ import smtplib
 import requests
 import simplejson as json
 from email.mime.text import MIMEText
-from local_settings import mail_settings, send_to_addresses, api_key
+from settings import mail_settings, send_to_addresses, api_key
 
 
 def fetch_forecast(api_key, request_type):
