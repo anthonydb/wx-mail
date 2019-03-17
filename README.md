@@ -25,6 +25,7 @@ The email text ends up looking like this:
 
 
 **Hello!**
+
 Here's the weather forecast as of March 16, 2019, at 8:00 PM
 
 **Today's Look Ahead**
