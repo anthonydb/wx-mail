@@ -6,6 +6,14 @@ I'm a weather nerd. I also own a Raspberry Pi. So, what better coding project th
 
 * Sign up for a free API key from [Dark Sky](https://darksky.net/dev). You won't be hitting the API much, so the free plan will work just fine.
 * Find the latitude and longitude of the place you want for your forecast.
-* Add that coordinates, your API key and your email information to `settings.py`. In there, you can also specify a list of the email addresses to send your forecast to.
+* Add those coordinates, your API key and your email information to `settings.py`. In there, you can also specify a list of the email addresses to send your forecast to.
 * You'll probably want to edit the email HTML to suit your needs.
 * Set this to run on a cron job and enjoy a fresh forecast in your inbox.
+
+## Requirements
+
+You'll need two Python libraries:
+
+```
+pip install requests darkskylib
+```
