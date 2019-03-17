@@ -20,7 +20,7 @@ pip install requests darkskylib
 
 ## Results
 
-The email text ends up looking like this:
+The email text ends up looking like this (of course, you can customize it):
 
 
 
