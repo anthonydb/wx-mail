@@ -1,20 +1,16 @@
-import datetime
 import smtplib
+import datetime
 import requests
-import simplejson as json
+from darksky import forecast
 from email.mime.text import MIMEText
-from settings import mail_settings, send_to_addresses, api_key
+from local_settings import mail_settings, send_to_addresses, api_key, latitude, longitude
 
 
-def fetch_forecast(api_key, request_type):
-    mail_url = 'http://api.wunderground.com/api/' + api_key + '/' +\
-               request_type + '/forecast/q/VA/Leesburg.json'
-    r = requests.get(mail_url)
-    j = json.loads(r.text)
-    return j
+def fetch_forecast(api_key, latitude, longitude):
+    f = forecast(api_key, latitude, longitude)
+    return f
 
-
-def build_html(forecast_json, yesterday_json):
+def build_html(today_weather):
     # build some HTML snippets to open and close this email
     html_open = """\
     <html>
@@ -27,48 +23,33 @@ def build_html(forecast_json, yesterday_json):
     """
 
     # let's now build the HTML body contents
-    wxdate = forecast_json['forecast']['txt_forecast']['date']
-    mail_text = '<h3>Hello, DeBarros family!</h3><p>Here is the ' +\
-                'Leesburg, Va., weather forecast as of ' + wxdate + '</p>'
-    forecast_length = len(forecast_json['forecast']['txt_forecast']['forecastday']) - 1
+    wxdate = datetime.datetime.fromtimestamp(today_weather.time).strftime('%B %e, %Y, at %l:%M %p')
+    mail_text = '<h3>Hello!</h3><p>Here\'s the ' +\
+                'weather forecast as of ' + wxdate + '</p>'
 
-    # looping through the JSON object
-    for i in range(0, forecast_length):
+    # This is the summary line
+    summary = '<p><b>Today\'s Look Ahead</b></p>' + today_weather.daily.summary.encode('UTF-8')
+    mail_text += summary
+
+    # The forecast line
+    cast_head = '<p><b>Your Big Weekly Forecast</b></p>'
+    mail_text += cast_head
+
+    for item in today_weather.daily:
+        date = datetime.datetime.fromtimestamp(item['time']).strftime('%A, %-m/%e')
+        summary = item['summary']
+        min_temp = item['temperatureMin']
+        max_temp = item['temperatureMax']
+        sunrise = datetime.datetime.fromtimestamp(item['sunriseTime']).strftime('%l:%M %p')
+        sunset = datetime.datetime.fromtimestamp(item['sunsetTime']).strftime('%l:%M %p')
+        
         cast = '<p><b>' +\
-            forecast_json['forecast']['txt_forecast']['forecastday'][i]['title'] +\
-            '</b>: ' +\
-            forecast_json['forecast']['txt_forecast']['forecastday'][i]['fcttext'] +\
-            '</p>'
-        mail_text += cast
-
-    # Now, for yesterday's weather summary ...
-    # We'll pull the date and some weather data from the summary API endpoint
-    summary_date = yesterday_json['history']['dailysummary'][0]['date']['pretty']
-
-    high_low_temp = yesterday_json['history']['dailysummary'][0]['maxtempi'] +\
-        ' / ' +\
-        yesterday_json['history']['dailysummary'][0]['mintempi'] +\
-        ' degrees Fahrenheit'
-
-    max_min_humid = yesterday_json['history']['dailysummary'][0]['maxhumidity'] +\
-        '% / ' +\
-        yesterday_json['history']['dailysummary'][0]['minhumidity'] + '%'
-
-    precipitation = yesterday_json['history']['dailysummary'][0]['precipi'] +\
-        ' inches'
-
-    max_wind_speed = yesterday_json['history']['dailysummary'][0]['maxwspdi'] +\
-        ' mph'
-
-    yesterday_html = """\
-    <h3>Here's yesterday's weather summary:</h3>
-    <p><b>High/low temperature: </b>""" + high_low_temp + '</p>' +\
-    '<p><b>Max/min humidity: </b>' + max_min_humid + '</p>' +\
-    '<p><b>Precipitation: </b>' + precipitation + '</p>' +\
-    '<p><b>Maximum wind speed: </b>' + max_wind_speed + '</p>'
+               date + '</b><br/> ' + summary + '<br/>* High ' + str(int(round(max_temp))) + '; low ' + str(int(round(min_temp))) +\
+                   '. <br/>* Sunrise ' + sunrise.lower() + '; set ' + sunset.lower() + '.</p>'
+        mail_text += cast.encode('UTF-8')
 
     # put it all together
-    html_body = html_open + mail_text + yesterday_html + html_close
+    html_body = html_open + mail_text + html_close
     return html_body
 
 
@@ -96,7 +77,6 @@ def send_email(mail_text):
 
 
 if __name__ == "__main__":
-    forecast_json = fetch_forecast(api_key, 'forecast')
-    yesterday_json = fetch_forecast(api_key, 'yesterday')
-    mail_text = build_html(forecast_json, yesterday_json)
+    today_weather = fetch_forecast(api_key, latitude, longitude)
+    mail_text = build_html(today_weather)
     send_email(mail_text)
