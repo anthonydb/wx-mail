@@ -35,18 +35,21 @@ Snow (< 1 in.) on Monday, with high temperatures bottoming out at 47°F on Monda
 **Your Big Weekly Forecast**
 
 **Saturday, 3/16**
+
 Partly cloudy until afternoon.
-* High 57; low 39. 
-* Sunrise 7:21 am; set 7:19 pm.
+\* High 57; low 39. 
+\* Sunrise 7:21 am; set 7:19 pm.
 
 **Sunday, 3/17**
+
 Mostly cloudy starting in the evening.
-* High 51; low 32. 
-* Sunrise 7:20 am; set 7:20 pm.
+\* High 51; low 32. 
+\* Sunrise 7:20 am; set 7:20 pm.
 
 **Monday, 3/18**
+
 Light snow (< 1 in.) in the morning.
-* High 47; low 33. 
-* Sunrise 7:18 am; set 7:21 pm.
+\* High 47; low 33. 
+\* Sunrise 7:18 am; set 7:21 pm.
 
 *etc. ...*
