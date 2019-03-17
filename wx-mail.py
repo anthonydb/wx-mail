@@ -35,6 +35,7 @@ def build_html(today_weather):
     cast_head = '<p><b>Your Big Weekly Forecast</b></p>'
     mail_text += cast_head
 
+    # Iterate through each day's forecast and build HTML
     for item in today_weather.daily:
         date = datetime.datetime.fromtimestamp(item['time']).strftime('%A, %-m/%e')
         summary = item['summary']
